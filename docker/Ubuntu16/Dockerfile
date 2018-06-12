@@ -1,15 +1,13 @@
-FROM base/archlinux
+FROM ubuntu:16.04
 
 ENV ILCSOFT /ilcsoft
 
-RUN pacman -Syu --noconfirm
-RUN pacman -S core/gcc extra/eigen extra/gsl extra/wget core/automake core/gcc-fortran extra/subversion extra/git extra/jdk8-openjdk extra/libx11 extra/libxpm extra/libxft extra/libxext extra/python2 extra/cmake core/which core/make core/tar --needed --noconfirm
+RUN apt update && apt-get -y install libeigen3-dev build-essential gfortran cmake subversion default-jdk libgsl0-dev libxpm-dev libxft-dev libx11-dev libxext-dev python-dev git wget 
 
 RUN mkdir -p $ILCSOFT
-RUN cd /usr/bin && ln -sf python2 python
 RUN git clone -b dev-base https://github.com/eutelescope/ilcinstall $ILCSOFT/ilcinstall
 RUN cd $ILCSOFT/ilcinstall && git status
-RUN $ILCSOFT/ilcinstall/ilcsoft-install -i -v $ILCSOFT/ilcinstall/examples/eutelescope/release-nocmake.cfg
+RUN $ILCSOFT/ilcinstall/ilcsoft-install -i -v $ILCSOFT/ilcinstall/examples/eutelescope/release-standalone.cfg
 
 ENV EUTELESCOPE /ilcsoft/v01-19-02/Eutelescope/master/
 ENV EUDAQ /ilcsoft/v01-19-02/Eutelescope/master/external/eudaq/v1.8.0/
