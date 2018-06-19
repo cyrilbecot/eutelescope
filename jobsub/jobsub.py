@@ -346,6 +346,59 @@ def submitNAF(filenamebase, jobtask, qsubfile, runnr):
         exit(1)
     return 0
 
+def submitHTCondor(filenamebase, jobtask, condorsubfile, runnr):
+    """ Submits the Marlin job to NAF """
+    import os
+    from sys import exit # use sys.exit instead of built-in exit (latter raises exception)
+    log = logging.getLogger('jobsub.' + jobtask)
+    # We are running on NAF with HTCondor.
+    # check for condor_submit executable
+    cmd = check_program("condor_submit")
+    if cmd:
+        log.debug("Found condor_submit executable: " + cmd)
+    else:
+        log.error("condor_submit executable not found in PATH!")
+        exit(1)
+
+    submitname = 'jobsub_'+jobtask+'_Run'+runnr
+    submitfile = open(submitname+'.submit','w')
+    submitfile.write('executable\t= '+submitname+'.sh \n')
+    submitfile.write('output\t= test.out\n')
+    submitfile.write('error\t= test.error\n')
+    submitfile.write('log\t= test.log\n')
+    # Add condorsub parameters:
+    for line in open(condorsubfile):
+        li=line.strip()
+        if not li.startswith("#"):
+            submitfile.write(str(line.rstrip())+'\n')
+    submitfile.write('queue')
+    submitfile.close()
+
+    pathEUTEL = os.environ.get('EUTELESCOPE')
+    exefile = open(submitname+'.sh','w')
+    exefile.write('source '+pathEUTEL+'/build_env.sh \n')
+    exefile.write('sleep 1 \n')
+    #exefile.write('cd /nfs/dust/atlas/user/arling/software/ilcsoft2/v01-19-02/Eutelescope/master/jobsub/examples/htc-submission \n')
+    exefile.write('Marlin '+filenamebase+".xml")
+    exefile.close()
+    #make it executable
+    os.popen('chmod u+x '+submitname+'.sh')
+
+    #send command
+    cmd = cmd + " " + submitname+'.submit'
+    rcode = None # the return code that will be set by a later subprocess method
+    try: 
+        # run process 
+        log.info("Now submitting Marlin job: "+filenamebase+".xml to HTCondor")
+        log.debug("Executing: "+cmd)
+        os.popen(cmd)
+    except OSError, e:
+        log.critical("Problem with HTCondor submission: Command '%s' resulted in error #%s, %s", cmd, e.errno, e.strerror)
+        exit(1)
+    
+    return 0
+
+
 def submitLXPLUS(filenamebase, jobtask, bsubfile, runnr):
     """ Submits the Marlin job to LXPLUS """
     import os
@@ -460,6 +513,7 @@ def main(argv=None):
     parser.add_argument('--version', action='version', version='Revision: $Revision$, $LastChangedDate$')
     parser.add_argument('--option', '-o', action='append', metavar="NAME=VALUE", help="Specify further options such as 'beamenergy=5.3'. This switch be specified several times for multiple options or can parse a comma-separated list of options. This switch overrides any config file options.")
     parser.add_argument("-c", "--conf-file", "--config", help="Load specified config file with global and task specific variables", metavar="FILE")
+    parser.add_argument("-htc", "--htc-file", "--htc", help="Specify condorsub parameter file for NAF submission. Run NAF submission via condor_submit instead of calling Marlin directly", metavar="FILE")
     parser.add_argument("-n", "--naf-file", "--naf", help="Specify qsub parameter file for NAF submission. Run NAF submission via qsub instead of calling Marlin directly", metavar="FILE")
     parser.add_argument("-lx", "--lxplus-file", "--lxplus", help="Specify bsub parameter file for LXPLUS submission. Run LXPLUS submission via bsub instead of calling Marlin directly", metavar="FILE")
     parser.add_argument("--concatenate", action="store_true", default=False, help="Modifies run range treatment: concatenate all runs into first run (e.g. to combine runs for alignment) by combining every options that includes the string '@RunRange@' multiple times, once for each run of the range specified.")
@@ -670,6 +724,12 @@ def main(argv=None):
             log.critical("Not possible to submit to both NAF and LXPLUS at the same time!")
             return 1
 
+        if args.htc_file:
+            args.htc_file = os.path.abspath(args.htc_file)
+            if not os.path.isfile(args.htc_file):
+                log.critical("NAF submission parameters file '"+args.htc_file+"' not found!")
+                return 1
+
         if args.naf_file:
             args.naf_file = os.path.abspath(args.naf_file)
             if not os.path.isfile(args.naf_file):
@@ -704,6 +764,12 @@ def main(argv=None):
         # bail out if running a dry run
         if args.dry_run:
             log.info("Dry run: skipping Marlin execution. Steering file written to "+basefilename+'.xml')
+        elif args.htc_file:
+            rcode = submitHTCondor(basefilename, args.jobtask, args.htc_file, runnr) # start NAF submission
+            if rcode == 0:
+                log.info("NAF job submitted")
+            else:
+                log.error("NAF submission returned with error code "+str(rcode))
         elif args.naf_file:
             rcode = submitNAF(basefilename, args.jobtask, args.naf_file, runnr) # start NAF submission
             if rcode == 0:
