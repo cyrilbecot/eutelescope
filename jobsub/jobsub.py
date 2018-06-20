@@ -652,7 +652,7 @@ def main(argv=None):
                         if not field == "" and not field == "runnumber":                    
                             steeringString = ireplace("@" + field + "@", parameters_csv[run][field], steeringString)
                     except EOFError:
-                        log.warn("Parameter '" + field + "' from the csv file was not found in the template file (already overwritten by config file parameters?)")
+                        log.info("Parameter '" + field + "' from '" + args.csv_file + "' was not found in the cfg/template file. Parameter is not used in this step.")
             except KeyError:
                 log.warning("Run #" + runnr + " was not found in the specified CSV file - will skip this run! ")
                 continue
