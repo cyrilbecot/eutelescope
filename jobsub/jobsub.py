@@ -363,9 +363,11 @@ def submitHTCondor(filenamebase, jobtask, condorsubfile, runnr):
     submitname = 'jobsub_'+jobtask+'_Run'+runnr
     submitfile = open(submitname+'.submit','w')
     submitfile.write('executable\t= '+submitname+'.sh \n')
-    submitfile.write('output\t= test.out\n')
-    submitfile.write('error\t= test.error\n')
-    submitfile.write('log\t= test.log\n')
+    submitfile.write('transfer_executable\t= True\n')
+    submitfile.write('universe\t= vanilla\n')
+    submitfile.write('output\t= ./output/logs/'+jobtask+'_Run'+runnr+'.log\n')
+    submitfile.write('error\t= ./output/logs/'+jobtask+'_Run'+runnr+'.error\n')
+    submitfile.write('log\t= ./output/logs/'+jobtask+'_Run'+runnr+'_submit.log\n')
     # Add condorsub parameters:
     for line in open(condorsubfile):
         li=line.strip()
@@ -378,7 +380,6 @@ def submitHTCondor(filenamebase, jobtask, condorsubfile, runnr):
     exefile = open(submitname+'.sh','w')
     exefile.write('source '+pathEUTEL+'/build_env.sh \n')
     exefile.write('sleep 1 \n')
-    #exefile.write('cd /nfs/dust/atlas/user/arling/software/ilcsoft2/v01-19-02/Eutelescope/master/jobsub/examples/htc-submission \n')
     exefile.write('Marlin '+filenamebase+".xml")
     exefile.close()
     #make it executable
