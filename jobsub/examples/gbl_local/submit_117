@@ -1,7 +1,0 @@
-Executable = run.sh
-#+Request_Runtime = 100  # default 3h, in seconds
-#RequestMemory = 100M
-output = output/submit_log/log_117.out
-error = output/submit_log/log_117.out
-log = output/submit_log/submit.log
-queue
