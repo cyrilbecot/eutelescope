@@ -351,8 +351,7 @@ def submitHTCondor(filenamebase, jobtask, condorsubfile, runnr):
     import os
     from sys import exit # use sys.exit instead of built-in exit (latter raises exception)
     log = logging.getLogger('jobsub.' + jobtask)
-    # We are running on NAF with HTCondor.
-    # check for condor_submit executable
+    # We are running on NAF with HTCondor: check for condor_submit executable
     cmd = check_program("condor_submit")
     if cmd:
         log.debug("Found condor_submit executable: " + cmd)
@@ -360,38 +359,43 @@ def submitHTCondor(filenamebase, jobtask, condorsubfile, runnr):
         log.error("condor_submit executable not found in PATH!")
         exit(1)
 
-    submitname = 'jobsub_'+jobtask+'_Run'+runnr
-    submitfile = open(submitname+'.submit','w')
-    submitfile.write('executable\t= '+submitname+'.sh \n')
-    submitfile.write('transfer_executable\t= True\n')
-    submitfile.write('universe\t= vanilla\n')
-    submitfile.write('output\t= ./output/logs/'+jobtask+'_Run'+runnr+'.log\n')
-    submitfile.write('error\t= ./output/logs/'+jobtask+'_Run'+runnr+'.error\n')
-    submitfile.write('log\t= ./output/logs/'+jobtask+'_Run'+runnr+'_submit.log\n')
+    # base_name
+    submit_name = 'jobsub_' + jobtask + '-' + runnr
+
+    # creat script for environment and Marlin command
+    script_file = open(submit_name + '.sh', 'w')
+    path_EUTELESCOPE = os.environ.get('EUTELESCOPE')
+    script_file.write('source ' + path_EUTELESCOPE + '/build_env.sh \n')
+    script_file.write('sleep 1 \n')
+    script_file.write('Marlin ' + filenamebase + ".xml")
+    script_file.close()
+    #make it executable
+    os.popen('chmod u+x ' + submit_name + '.sh')
+    
+    # option file
+    option_file = open(submit_name + '.submit', 'w')
+    option_file.write('Executable\t= '+ submit_name + '.sh \n')
+    #option_file.write('transfer_executable\t= True\n')
+    #option_file.write('universe\t= vanilla\n')
+    option_file.write('Output\t= ./output/logs/' + jobtask + '-' + runnr + '.log\n')
+    option_file.write('Error\t= ./output/logs/' + jobtask + '-' + runnr + '.error\n')
+    option_file.write('Log\t= ./output/logs/' + jobtask + '-' + runnr + '-condor.log\n')
     # Add condorsub parameters:
     for line in open(condorsubfile):
         li=line.strip()
         if not li.startswith("#"):
-            submitfile.write(str(line.rstrip())+'\n')
-    submitfile.write('queue')
-    submitfile.close()
+	  option_file.write(str(line.rstrip())+'\n')
+    option_file.write('queue')
+    option_file.close()
 
-    pathEUTEL = os.environ.get('EUTELESCOPE')
-    exefile = open(submitname+'.sh','w')
-    exefile.write('source '+pathEUTEL+'/build_env.sh \n')
-    exefile.write('sleep 1 \n')
-    exefile.write('Marlin '+filenamebase+".xml")
-    exefile.close()
-    #make it executable
-    os.popen('chmod u+x '+submitname+'.sh')
 
     #send command
-    cmd = cmd + " " + submitname+'.submit'
+    cmd = cmd + " " + submit_name + '.submit'
     rcode = None # the return code that will be set by a later subprocess method
     try: 
         # run process 
-        log.info("Now submitting Marlin job: "+filenamebase+".xml to HTCondor")
-        log.debug("Executing: "+cmd)
+        log.info("Now submitting Marlin job: " + filenamebase + ".xml to HTCondor")
+        log.debug("Executing: " + cmd)
         os.popen(cmd)
     except OSError, e:
         log.critical("Problem with HTCondor submission: Command '%s' resulted in error #%s, %s", cmd, e.errno, e.strerror)
@@ -728,7 +732,7 @@ def main(argv=None):
         if args.htc_file:
             args.htc_file = os.path.abspath(args.htc_file)
             if not os.path.isfile(args.htc_file):
-                log.critical("NAF submission parameters file '"+args.htc_file+"' not found!")
+                log.critical("NAF (condor) submission parameters file '" + args.htc_file + "' not found!")
                 return 1
 
         if args.naf_file:
@@ -768,9 +772,9 @@ def main(argv=None):
         elif args.htc_file:
             rcode = submitHTCondor(basefilename, args.jobtask, args.htc_file, runnr) # start NAF submission
             if rcode == 0:
-                log.info("NAF job submitted")
+                log.info("NAF (condor) job submitted")
             else:
-                log.error("NAF submission returned with error code "+str(rcode))
+                log.error("NAF (condor) submission returned with error code "+str(rcode))
         elif args.naf_file:
             rcode = submitNAF(basefilename, args.jobtask, args.naf_file, runnr) # start NAF submission
             if rcode == 0:
