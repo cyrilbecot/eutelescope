@@ -10,8 +10,6 @@
 	    - Processors that are not installed in your Marlin binary lost their parameter's descriptions and types as well.
 	    - Extra parameters that aren't categorized as default in a processor lost their description and type.
 ============================================================================================================================
-    <parameter name="BasePath">@BasePath@</parameter>
-    <parameter name="HistoInfoFile">@HistoInfoFile@</parameter>
 -->
 
 
@@ -27,6 +25,8 @@
 
   <global>
     <parameter name="LCIOInputFiles"/>
+    <parameter name="BasePath">@BasePath@</parameter>
+    <parameter name="HistoInfoFile">@HistoInfoFile@</parameter>
     <parameter name="GearXMLFile">@GearFilePath@/@GearFile@</parameter>
     <parameter name="MaxRecordNumber">@MaxRecordNumber@</parameter>
     <parameter name="SkipNEvents">@SkipNEvents@</parameter>

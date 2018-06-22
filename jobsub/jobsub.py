@@ -367,7 +367,7 @@ def submitHTCondor(filenamebase, jobtask, condorsubfile, runnr):
     path_EUTELESCOPE = os.environ.get('EUTELESCOPE')
     script_file.write('source ' + path_EUTELESCOPE + '/build_env.sh \n')
     script_file.write('sleep 1 \n')
-    script_file.write('Marlin ' + filenamebase + ".xml")
+    script_file.write('Marlin ' + 'output/' + filenamebase + '.xml\n')
     script_file.close()
     #make it executable
     os.popen('chmod u+x ' + submit_name + '.sh')
@@ -375,17 +375,15 @@ def submitHTCondor(filenamebase, jobtask, condorsubfile, runnr):
     # option file
     option_file = open(submit_name + '.submit', 'w')
     option_file.write('Executable\t= '+ submit_name + '.sh \n')
-    #option_file.write('transfer_executable\t= True\n')
-    #option_file.write('universe\t= vanilla\n')
     option_file.write('Output\t= ./output/logs/' + jobtask + '-' + runnr + '.log\n')
     option_file.write('Error\t= ./output/logs/' + jobtask + '-' + runnr + '.error\n')
-    option_file.write('Log\t= ./output/logs/' + jobtask + '-' + runnr + '-condor.log\n')
+    option_file.write('Log\t= ./output/logs/' + jobtask + '-' + runnr + '.condor\n')
     # Add condorsub parameters:
     for line in open(condorsubfile):
         li=line.strip()
         if not li.startswith("#"):
 	  option_file.write(str(line.rstrip())+'\n')
-    option_file.write('queue')
+    option_file.write('Queue\n')
     option_file.close()
 
 
@@ -445,7 +443,7 @@ def submitLXPLUS(filenamebase, jobtask, bsubfile, runnr):
         exit(1)
     return 0
 
-def zipLogs(path, filename):
+def zip_logs(path, filename):
     """  stores output from Marlin in zip file; enables compression if necessary module is available """
     import zipfile
     import os.path
@@ -460,10 +458,10 @@ def zipLogs(path, filename):
     try:
         zf = zipfile.ZipFile(os.path.join(path, filename)+".zip", mode='w') # create new zip file
         try:
-            zf.write(os.path.join("./", filename)+".xml", compress_type=compression) # store in zip file
-            zf.write(os.path.join("./", filename)+".log", compress_type=compression) # store in zip file
-            os.remove(os.path.join("./", filename)+".xml") # delete file
-            os.remove(os.path.join("./", filename)+".log") # delete file
+            zf.write(os.path.join("output/", filename)+".xml", compress_type=compression) # store in zip file
+            zf.write(os.path.join("output/", filename)+".log", compress_type=compression) # store in zip file
+            #os.remove(os.path.join("./", filename)+".xml") # delete file
+            #os.remove(os.path.join("./", filename)+".log") # delete file
             log.info("Logs written to "+os.path.join(path, filename)+".zip")
         finally:
             log.debug("Closing log archive file")
@@ -758,8 +756,9 @@ def main(argv=None):
             os.chdir(basedirectory)
         
         # Write the steering file:
-        basefilename = args.jobtask+"-"+runnr
-        steeringFile = open(basefilename+".xml", "w")
+        basefilename = args.jobtask + "-" + runnr
+	writepath = 'output/'
+        steeringFile = open(writepath + basefilename + ".xml", "w")
 
         try:
             steeringFile.write(steeringString)
@@ -768,7 +767,7 @@ def main(argv=None):
 
         # bail out if running a dry run
         if args.dry_run:
-            log.info("Dry run: skipping Marlin execution. Steering file written to "+basefilename+'.xml')
+            log.info("Dry run: skipping Marlin execution. Steering file written to " + writepath + basefilename + '.xml')
         elif args.htc_file:
             rcode = submitHTCondor(basefilename, args.jobtask, args.htc_file, runnr) # start NAF submission
             if rcode == 0:
@@ -788,12 +787,12 @@ def main(argv=None):
             else:
                 log.error("LXPLUS submission returned with error code "+str(rcode))
         else:
-            rcode = runMarlin(basefilename, args.jobtask, args.silent) # start Marlin execution
+            rcode = runMarlin(writepath + basefilename, args.jobtask, args.silent) # start Marlin execution
             if rcode == 0:
                 log.info("Marlin execution done")
             else:
                 log.error("Marlin returned with error code "+str(rcode))
-            zipLogs(parameters["logpath"], basefilename)
+            zip_logs(parameters["logpath"], basefilename)
 
         # Return to old directory:
         if args.subdir:
