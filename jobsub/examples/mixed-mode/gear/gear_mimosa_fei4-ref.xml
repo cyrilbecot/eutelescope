@@ -124,7 +124,7 @@
 	<!-- TODO: Scintillator -->
 	<!-- FEI4b 3D sensor, DESY system; copied and adjusted from ATLAS ITk -->
 	<layer>
-	  <ladder ID="20" 
+	  <ladder ID="10" 
 	    positionX="0.0" 	positionY="0.0" 	positionZ="640" 
 	    rotationXY="90" 	rotationZX="0" 		rotationZY="0" 
 	    sizeX="20.0" 	sizeY="16.8" 		thickness="0.300" 
