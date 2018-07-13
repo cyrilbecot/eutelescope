@@ -84,7 +84,7 @@
     <!-- This is the name of the hot pixel collection to be saved into the output slcio file-->
     <parameter name="HotPixelCollectionName" type="string" value="hotpixel_apix"/>
     <!-- This is the name of the LCIO file name with the output hotpixel db (add .slcio)-->
-    <parameter name="HotPixelDBFile" type="string" value="@DatabasePath@/@FilePrefix@-hotpixel-apix-db.slcio"/>
+    <parameter name="HotPixelDBFile" type="string" value="@DatabasePath@/@FilePrefix@-hotpixel-db-apix.slcio"/>
     <!-- Write mode for HotPixelDB file:  WRITE_APPEND or WRITE_NEW-->
     <!--<parameter name="LCIOWriteMode" type="string" value="WRITE_NEW"/>-->
     <!-- verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->

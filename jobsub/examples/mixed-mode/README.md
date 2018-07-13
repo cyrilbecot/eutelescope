@@ -1,16 +1,12 @@
 ## Mixed Mode example for a EUTelescope analysis
 
 ```
-jobsub -c config-mixed.cfg -csv runlist.csv -g hotpixelmasker 315
-```
+jobsub -c config-mixed.cfg -csv runlist.csv -g noisypixelmasker 315
+jobsub -c config-mixed.cfg -csv runlist.csv -g clustering 315
 
-
-```
-jobsub -c config.cfg -csv runlist.csv -g converter 117
-jobsub -c config.cfg -csv runlist.csv -g clustering 117
-jobsub -c config.cfg -csv runlist.csv -g hitmaker 117
-jobsub -c config.cfg -csv runlist.csv -g aligngbl 117
-jobsub -c config.cfg -csv runlist.csv -g aligngbl2 117
-jobsub -c config.cfg -csv runlist.csv -g aligngbl3 117
-jobsub -c config.cfg -csv runlist.csv -g trackgbltriplet 117
+jobsub -c config-mixed.cfg -csv runlist.csv -g hitmaker 315
+jobsub -c config-mixed.cfg -csv runlist.csv -g aligngbl 315
+jobsub -c config-mixed.cfg -csv runlist.csv -g aligngbl 315
+jobsub -c config-mixed.cfg -csv runlist.csv -g aligngbl 315
+jobsub -c config-mixed.cfg -csv runlist.csv -g trackgbltriplet 315
 ```

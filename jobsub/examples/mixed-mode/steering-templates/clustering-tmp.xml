@@ -15,12 +15,11 @@
   </execute>
 
   <global>
-    <parameter name="LCIOInputFiles"> @LcioPath@/run@RunNumber@-converter.slcio </parameter>
+    <parameter name="LCIOInputFiles"> @LcioPath@/@FilePrefix@-noisypixelmasker.slcio </parameter>
     <parameter name="BasePath">@BasePath@</parameter>
     <parameter name="NativePath">@NativePath@</parameter>
     <parameter name="GearXMLFile"> @GearFilePath@/@GearFile@ </parameter>
     <parameter name="MaxRecordNumber"> @MaxRecordNumber@ </parameter>
-    <parameter name="HotpixelRunNumber">@HotpixelRunNumber@</parameter>
     <parameter name="SkipNEvents"> @SkipNEvents@ </parameter>
     <parameter name="SupressCheck"> false </parameter>
     <parameter name="Verbosity"> @Verbosity@ </parameter>
@@ -49,7 +48,7 @@
     <!--Initialization of a data file handler-->
     <!--<parameter name="DataFileHandler" type="StringVec">conditionsName  </parameter>-->
     <!--Initialization of a simple conditions file handler-->
-    <parameter name="SimpleFileHandler" type="StringVec"> hotpixel_m26   @DatabasePath@/run@RunNumber@-hotpixel-m26-db.slcio hotpixel_m26  </parameter>
+    <parameter name="SimpleFileHandler" type="StringVec"> hotpixel_m26   @DatabasePath@/@FilePrefix@-hotpixel-db-m26.slcio hotpixel_m26  </parameter>
     <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
     <!--<parameter name="Verbosity" type="string">DEBUG </parameter>-->
   </processor>
@@ -57,6 +56,8 @@
   <processor name="ClusteringMimosa" type="EUTelProcessorSparseClustering">
     <!--EUTelProcessorGeometricClustering is looking for clusters into a calibrated pixel matrix.-->
     <!--The list of sensor ids that have to be excluded from the clustering.-->
+    <!--Input of Zero Suppressed data-->
+    <parameter name="ZSDataCollectionName" type="string" lcioInType="TrackerData">zsdata </parameter>
     <!--<parameter name="ExcludedPlanes" type="IntVec"> </parameter>-->
     <!--This is the name of the histogram information file-->
     <parameter name="HistoInfoFileName" type="string"> @HistoInfoFile@ </parameter>
@@ -68,8 +69,6 @@
     <!--<parameter name="TCut" type="float">3.40282e+38 </parameter>-->
     <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
     <!--<parameter name="Verbosity" type="string">DEBUG </parameter>-->
-    <!--Input of Zero Suppressed data-->
-    <parameter name="ZSDataCollectionName" type="string" lcioInType="TrackerData">zsdata_m26 </parameter>
   </processor>
 
   <processor name="NoisyClusterMasker" type="EUTelProcessorNoisyClusterMasker">
@@ -103,7 +102,7 @@
     <!--force keep of the named collections - overrules DropCollectionTypes (and DropCollectionNames)-->
     <!--<parameter name="KeepCollectionNames" type="StringVec">MyPreciousSimTrackerHits  </parameter>-->
     <!-- name of output file -->
-    <parameter name="LCIOOutputFile" type="string"> @LcioPath@/run@RunNumber@-clustering.slcio </parameter>
+    <parameter name="LCIOOutputFile" type="string"> @LcioPath@/@FilePrefix@-clustering.slcio </parameter>
     <!--write mode for output file:  WRITE_APPEND or WRITE_NEW-->
     <parameter name="LCIOWriteMode" type="string"> WRITE_NEW </parameter>
     <!--Set it to true to remove intermediate EORE in merged runs-->

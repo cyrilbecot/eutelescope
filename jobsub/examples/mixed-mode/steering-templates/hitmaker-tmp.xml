@@ -32,7 +32,6 @@
     <parameter name="DatabasePath">@DatabasePath@</parameter>
     <parameter name="GearXMLFile"> @GearFilePath@/@GearFile@ </parameter>
     <parameter name="MaxRecordNumber"> @MaxRecordNumber@ </parameter>
-    <parameter name="HotpixelRunNumber">@HotpixelRunNumber@</parameter>
     <parameter name="SkipNEvents"> @SkipNEvents@ </parameter>
     <parameter name="SupressCheck"> false </parameter>
     <parameter name="Verbosity"> @Verbosity@ </parameter>
