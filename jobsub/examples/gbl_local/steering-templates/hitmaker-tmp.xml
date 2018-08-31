@@ -124,7 +124,7 @@
     <!--Dump the offset X and Y values calculated from the correlation bands (default = true)-->
     <parameter name="DumpOffset" type="bool"> false </parameter>
     <!--How many events are needed to get reasonable correlation plots (and Offset DB)? (default=1000)-->
-    <parameter name="Events" type="int"> 9999 </parameter>
+    <parameter name="Events" type="int" value="@NoEvents@"/>
     <!--Name of histogram info xml file-->
     <parameter name="HistogramInfoFilename" type="string"> @HistoInfoFile@ </parameter>
     <!--SensorID of fixed plane-->
