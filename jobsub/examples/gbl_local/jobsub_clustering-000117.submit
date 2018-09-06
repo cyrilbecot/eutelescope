@@ -1,0 +1,8 @@
+Executable	= jobsub_clustering-000117.sh 
+Output	= ./output/logs/clustering-000117.log
+Error	= ./output/logs/clustering-000117.error
+Log	= ./output/logs/clustering-000117.condor
+
+Universe	= vanilla
+RequestMemory	= 1024
+Queue

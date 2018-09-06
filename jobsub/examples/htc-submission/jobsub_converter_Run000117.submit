@@ -1,0 +1,9 @@
+executable	= jobsub_converter_Run000117.sh 
+transfer_executable	= True
+universe	= vanilla
+output	= ./output/logs/converter_Run000117.log
+error	= ./output/logs/converter_Run000117.error
+log	= ./output/logs/converter_Run000117_submit.log
+
+RequestMemory = 1024
+queue

@@ -1,0 +1,9 @@
+digraph MarlinSteering {
+node [ fontname = "Helvetica",style = filled ];
+LCIOFile [color=darkgreen, fontcolor=white, label="LCIO File"]
+AIDA [color=navyblue, fontcolor=white, label="AIDA"shape=rectangle];
+UniversalNativeReader [color=navyblue, fontcolor=white, label="UniversalNativeReader"shape=rectangle];
+HotPixelMasker [color=navyblue, fontcolor=white, label="HotPixelMasker"shape=rectangle];
+Save [color=navyblue, fontcolor=white, label="Save"shape=rectangle];
+MyEUTelUtilityPrintEventNumber [color=navyblue, fontcolor=white, label="MyEUTelUtilityPrintEventNumber"shape=rectangle];
+};
