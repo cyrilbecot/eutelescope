@@ -32,7 +32,6 @@
     <parameter name="DatabasePath">@DatabasePath@</parameter>
     <parameter name="GearXMLFile"> @GearFilePath@/@GearFile@ </parameter>
     <parameter name="MaxRecordNumber"> @MaxRecordNumber@ </parameter>
-    <parameter name="HotpixelRunNumber">@HotpixelRunNumber@</parameter>
     <parameter name="SkipNEvents"> @SkipNEvents@ </parameter>
     <parameter name="SupressCheck"> false </parameter>
     <parameter name="Verbosity"> @Verbosity@ </parameter>
@@ -124,7 +123,7 @@
     <!--Dump the offset X and Y values calculated from the correlation bands (default = true)-->
     <parameter name="DumpOffset" type="bool"> false </parameter>
     <!--How many events are needed to get reasonable correlation plots (and Offset DB)? (default=1000)-->
-    <parameter name="Events" type="int" value="@NoEvents@"/>
+    <parameter name="Events" type="int"> 9999 </parameter>
     <!--Name of histogram info xml file-->
     <parameter name="HistogramInfoFilename" type="string"> @HistoInfoFile@ </parameter>
     <!--SensorID of fixed plane-->

@@ -21,52 +21,49 @@
       <processor name="HitLocalToGlobal"/>
       <processor name="Correlator"/>
       <processor name="PreAligner"/>
-      <!--<processor name="SaveAsRoot"/>-->
+     <xprocessor name="SaveAsRoot"/>
       <processor name="Save"/>
       <processor name="EUTelUtilityPrintEventNumber"/>
    </execute>
 
    <global>
-     <parameter name="LCIOInputFiles"> @LcioPath@/@FilePrefix@-clustering.slcio </parameter>
-     <parameter name="BasePath">@BasePath@</parameter>
-     <parameter name="NativePath">@NativePath@</parameter>
-     <parameter name="DatabasePath">@DatabasePath@</parameter>
-     <parameter name="GearXMLFile"> @GearFilePath@/@GearFile@ </parameter>
-     <parameter name="MaxRecordNumber"> @MaxRecordNumber@ </parameter>
-     <parameter name="HotpixelRunNumber">@HotpixelRunNumber@</parameter>
-     <parameter name="SkipNEvents"> @SkipNEvents@ </parameter>
-     <parameter name="SupressCheck"> false </parameter>
-     <parameter name="Verbosity"> @Verbosity@ </parameter>
+      <parameter name="LCIOInputFiles"> @LcioPath@/@FilePrefix@-clustering.slcio </parameter>
+      <parameter name="GearXMLFile" value="@GearFilePath@/@GearFile@"/>
+      <parameter name="MaxRecordNumber" value="@MaxRecordNumber@"/>
+      <parameter name="SkipNEvents" value="@SkipNEvents@"/>
+      <parameter name="SupressCheck" value="false"/>
+      <parameter name="Verbosity" value="@Verbosity@"/>
    </global>
 
-   <processor name="AIDA" type="AIDAProcessor">
-     <!--Processor that handles AIDA files. Creates on directory per processor.  Processors only need to create and fill the histograms, clouds and tuples. Needs to be the first ActiveProcessor-->
-     <!-- compression of output file 0: false >0: true (default) -->
-     <parameter name="Compress" type="int" value="1"/>
-     <!-- filename without extension-->
-     <parameter name="FileName" type="string" value="@HistogramPath@/@FilePrefix@-hitmaker"/>
-     <!-- type of output file root (default) or xml )-->
-     <parameter name="FileType" type="string" value="root"/>
-     <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
-     <!--parameter name="Verbosity" type="string" value=""/-->
-   </processor>
+ <processor name="AIDA" type="AIDAProcessor">
+ <!--Processor that handles AIDA files. Creates on directory per processor.  Processors only need to create and fill the histograms, clouds and tuples. Needs to be the first ActiveProcessor-->
+  <!-- compression of output file 0: false >0: true (default) -->
+  <parameter name="Compress" type="int" value="1"/>
+  <!-- filename without extension-->
+  <parameter name="FileName" type="string" value="@HistogramPath@/@FilePrefix@-hitmaker-histo"/>
+  <!-- type of output file root (default) or xml )-->
+  <parameter name="FileType" type="string" value="root"/>
+  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+  <!--parameter name="Verbosity" type="string" value=""/-->
+</processor>
 
-   <processor name="HitMakerM26" type="EUTelProcessorHitMaker">
-     <!--EUTelProcessorHitMaker is responsible to translate cluster centers from the local frame of reference to the external frame of reference using the GEAR geometry description-->
-     <!--Input cluster collection name-->
-     <parameter name="PulseCollectionName" type="string" lcioInType="TrackerPulse"> cluster_m26_free </parameter>
-     <!--Output hit collection name-->
-     <parameter name="HitCollectionName" type="string" lcioOutType="TrackerHit"> local_hit </parameter>
-     <!--Hit coordinates are calculated in local reference frame of sensor-->
-     <parameter name="EnableLocalCoordidates" type="bool" value="true"/>
+ <processor name="HitMakerM26" type="EUTelProcessorHitMaker">
+ <!--EUTelProcessorHitMaker is responsible to translate cluster centers from the local frame of reference 
+to the external frame of reference using the GEAR geometry description-->
+  <!--Input cluster collection name-->
+  <parameter name="PulseCollectionName" type="string" lcioInType="TrackerPulse"> cluster_m26_free </parameter>
+  <!--Output hit collection name-->
+  <parameter name="HitCollectionName" type="string" lcioOutType="TrackerHit"> local_hit </parameter>
+  <!--Hit coordinates are calculated in local reference frame of sensor-->
+  <parameter name="EnableLocalCoordidates" type="bool" value="true"/>
 
-     <!--This is the name of the reference hit collection initialized in this processor. This collection provides the reference vector to correctly determine a plane corresponding to a global hit coordiante.-->
-     <!--parameter name="ReferenceCollection" type="string" value="referenceHit"/-->
-     <!--This is the file where the reference hit collection is stored-->
-     <!--<parameter name="ReferenceHitFile" type="string" value="@DatabasePath@/@FilePrefix@-refhit-db.slcio"/>-->
-     <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
-     <!--parameter name="Verbosity" type="string" value=""/-->
-   </processor>
+  <!--This is the name of the reference hit collection initialized in this processor. This collection provides the reference vector to correctly determine a plane corresponding to a global hit coordiante.-->
+  <!--parameter name="ReferenceCollection" type="string" value="referenceHit"/-->
+  <!--This is the file where the reference hit collection is stored-->
+  <parameter name="ReferenceHitFile" type="string" value="@DatabasePath@/@FilePrefix@-refhit-db.slcio"/>
+  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+  <!--parameter name="Verbosity" type="string" value=""/-->
+</processor>
 
 
  <processor name="HitMakerAPIX" type="EUTelProcessorHitMaker">
@@ -81,7 +78,7 @@ to the external frame of reference using the GEAR geometry description-->
   <!--This is the name of the reference hit collection initialized in this processor. This collection provides the reference vector to correctly determine a plane corresponding to a global hit coordiante.-->
   <!--parameter name="ReferenceCollection" type="string" value="referenceHit"/-->
   <!--This is the file where the reference hit collection is stored-->
-  <!--<parameter name="ReferenceHitFile" type="string" value="@DatabasePath@/@FilePrefix@-refhit-db.slcio"/>-->
+  <parameter name="ReferenceHitFile" type="string" value="@DatabasePath@/@FilePrefix@-refhit-db.slcio"/>
   <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
   <!--parameter name="Verbosity" type="string" value=""/-->
 </processor>
@@ -107,9 +104,9 @@ to the external frame of reference using the GEAR geometry description-->
   <!-- Sorry, this parameter isn't a default parameter for this processor: description and type lost!!  -->
   <parameter name="DumpOffset" value="false"/>
   <!--How many events are needed to get reasonable correlation plots (and Offset DB)? (default=1000)-->
-  <parameter name="Events" type="int" value="@CorrelatorEvents@"/>
+  <parameter name="Events" type="int" value="@NoEvents@"/>
   <!--SensorID of fixed plane-->
-  <parameter name="FixedPlane" type="int" value="0"/>
+  <!--parameter name="FixedPlane" type="int" value="0"/-->
   <!--Name of histogram info xml file-->
   <parameter name="HistogramInfoFilename" type="string" value="@HistoInfoFile@"/>
   <!--This is the name of the hot pixel collection to be saved into the output slcio file-->
@@ -121,15 +118,15 @@ to the external frame of reference using the GEAR geometry description-->
   <!-- Sorry, this parameter isn't a default parameter for this processor: description and type lost!!  -->
   <parameter name="ReferenceCollection" value="refhit"/>
   <!--Maximal values of the hit residuals in the X direction for a correlation band. Note: these numbers are ordered according to the z position of the sensors and NOT according to the sensor id.-->
-  <parameter name="ResidualsXMax" type="FloatVec"> @CorrelatorResidualsXMax@ </parameter>
+  <parameter name="ResidualsXMax" type="FloatVec" value="@ResidualsXMax@"/>
   <!--Minimal values of the hit residuals in the X direction for a correlation band. Note: these numbers are ordered according to the z position of the sensors and NOT according to the sensor id.-->
-  <parameter name="ResidualsXMin" type="FloatVec"> @CorrelatorResidualsXMin@ </parameter>
+  <parameter name="ResidualsXMin" type="FloatVec" value="@ResidualsXMin@"/>
   <!--Maximal values of the hit residuals in the Y direction for a correlation band. Note: these numbers are ordered according to the z position of the sensors and NOT according to the sensor id.-->
-  <parameter name="ResidualsYMax" type="FloatVec"> @CorrelatorResidualsYMax@ </parameter>
+  <parameter name="ResidualsYMax" type="FloatVec" value="@ResidualsYMax@"/>
   <!--Minimal values of the hit residuals in the Y direction for a correlation band. Note: these numbers are ordered according to the z position of the sensors and NOT according to the sensor id.-->
-  <parameter name="ResidualsYMin" type="FloatVec"> @CorrelatorResidualsYMin@ </parameter>
+  <parameter name="ResidualsYMin" type="FloatVec" value="@ResidualsYMin@"/>
   <!-- Sorry, this parameter isn't a default parameter for this processor: description and type lost!!  -->
-  <!--<parameter name="UseReferenceCollection" value="true"/>-->
+  <parameter name="UseReferenceCollection" value="true"/>
   <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
   <!--parameter name="Verbosity" type="string" value=""/-->
 </processor>
@@ -143,13 +140,13 @@ to the external frame of reference using the GEAR geometry description-->
   <!--Dump alignment into GEAR file instead of prealignment database-->
   <parameter name="DumpGEAR" type="bool" value="true"/>
   <!--How many events should be used for an approximation to the X,Y shifts (pre-alignment)? (default=50000)-->
-  <parameter name="Events" type="int" value="@PreAlignEvents@"/>
+  <parameter name="Events" type="int" value="@NoEvents@"/>
   <!--The list of sensor IDs that shall be excluded.-->
-  <!--<parameter name="ExcludedPlanes" type="IntVec">  </parameter>-->
+  <parameter name="ExcludedPlanes" type="IntVec"> @ExcludedPlanes@ </parameter>
   <!--The list of sensor IDs for which the X coordinate shall be excluded.-->
-  <!--<parameter name="ExcludedPlanesXCoord" type="IntVec">  </parameter>-->
+  <parameter name="ExcludedPlanesXCoord" type="IntVec"> @ExcludedPlanesXCoord@ </parameter>
   <!--The list of sensor IDs for which the Y coordinate  shall be excluded.-->
-  <!--<parameter name="ExcludedPlanesYCoord" type="IntVec">  </parameter>-->
+  <parameter name="ExcludedPlanesYCoord" type="IntVec"> @ExcludedPlanesYCoord@  </parameter>
   <!--SensorID of fixed plane-->
   <!--parameter name="FixedPlane" type="int" value="0"/-->
   <!--Switch on or off the histogram filling-->
@@ -159,16 +156,15 @@ to the external frame of reference using the GEAR geometry description-->
   <!--If there are more then this number of correlated hits (planes->track candidate) (default=5)-->
   <!--parameter name="MinNumberOfCorrelatedHits" type="int" value="5"/-->
   <!--Suffix for the new GEAR file, set to empty string (this is not default!) to overwrite old GEAR file-->
-  <!--<parameter name="NewGEARSuffix" type="string" value="_pre"/>-->
-  <parameter name="NewGEARSuffix" type="string"> @RunNumber@_pre </parameter>
+  <parameter name="NewGEARSuffix" type="string" value="_pre"/>
   <!--Maximal values of the hit residuals in the X direction for a correlation band. Note: these numbers are ordered according to the z position of the sensors and NOT according to the sensor id.-->
-  <parameter name="ResidualsXMax" type="FloatVec" value="@PreAlignResidualsXMax@"/>
+  <parameter name="ResidualsXMax" type="FloatVec" value="@ResidualsXMax@"/>
   <!--Minimal values of the hit residuals in the X direction for a correlation band. Note: these numbers are ordered according to the z position of the sensors and NOT according to the sensor id.-->
-  <parameter name="ResidualsXMin" type="FloatVec" value="@PreAlignResidualsXMin@"/>
+  <parameter name="ResidualsXMin" type="FloatVec" value="@ResidualsXMin@"/>
   <!--Maximal values of the hit residuals in the Y direction for a correlation band. Note: these numbers are ordered according to the z position of the sensors and NOT according to the sensor id.-->
-  <parameter name="ResidualsYMax" type="FloatVec" value="@PreAlignResidualsYMax@"/>
+  <parameter name="ResidualsYMax" type="FloatVec" value="@ResidualsYMax@"/>
   <!--Minimal values of the hit residuals in the Y direction for a correlation band. Note: these numbers are ordered according to the z position of the sensors and NOT according to the sensor id.-->
-  <parameter name="ResidualsYMin" type="FloatVec" value="@PreAlignResidualsYMin@"/>
+  <parameter name="ResidualsYMin" type="FloatVec" value="@ResidualsYMin@"/>
   <!-- Sorry, this parameter isn't a default parameter for this processor: description and type lost!!  -->
   <parameter name="UseReferenceCollection" value="false"/>
   <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
@@ -197,22 +193,21 @@ to the external frame of reference using the GEAR geometry description-->
   <!--parameter name="Verbosity" type="string" value=""/-->
 </processor>
 
-<processor name="EUTelUtilityPrintEventNumber" type="EUTelUtilityPrintEventNumber">
-  <!--EUTelUtilityPrintEventNumber prints event number to screen depending on the verbosity level-->
+ <processor name="EUTelUtilityPrintEventNumber" type="EUTelUtilityPrintEventNumber">
+ <!--EUTelUtilityPrintEventNumber prints event number to screen depending on the verbosity level-->
   <!--Print event number for every n-th event-->
-  <parameter name="EveryNEvents" type="int" value="2500"/>
+  <parameter name="EveryNEvents" type="int" value="@NEventsMessage@"/>
   <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
   <!--parameter name="Verbosity" type="string" value=""/-->
   <!--print the event timestamp as read from LCIO-->
   <!--parameter name="printTimestamp" type="bool" value="false"/-->
 </processor>
+  <processor name="SaveAsRoot" type="EUTelOutputTTree">
+    <!--EUTelProcessorNoisyClusterMasker masks pulses which contain hot pixels. For this, the quality field of pulses is used to encode the kNoisyCluster enum provided by EUTelescope.-->
+    <!--Input of zero suppressed data, still containing hot pixels-->
 
-<!--<processor name="SaveAsRoot" type="EUTelOutputTTree">-->
-  <!--EUTelProcessorNoisyClusterMasker masks pulses which contain hot pixels. For this, the quality field of pulses is used to encode the kNoisyCluster enum provided by EUTelescope.-->
-  <!--Input of zero suppressed data, still containing hot pixels-->
-
-  <!--<parameter name="OutputPath" type="string" value="hitmaker.root"/>-->
-  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
-  <!--parameter name="Verbosity" type="string" value=""/-->
-<!--</processor-->>
+    <parameter name="OutputPath" type="string" value="hitmaker.root"/>
+    <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+    <!--parameter name="Verbosity" type="string" value=""/-->
+  </processor>
 </marlin>
