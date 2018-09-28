@@ -1,0 +1,32 @@
+All the files are here:
+
+/nfs/dust/atlas/user/rossi/master/v01-19-02/Eutelescope/master/jobsub/examples/ITkStrip
+
+Basically you need the steering for converter, clustering, hitmaker and
+aligngbl. The converter is already compatible with EUDAQ2, but pay
+attention that it is calling some processors for strips (in clustering
+and hitmaker comment out any processor with "strip" from the executed
+processors).
+
+Apart from this, the strip detector has ID 11 and you can just delete
+it. The FEI4 has ID 7 and it was the second to last plane.
+
+In the config, apart from the various paths, the only modifications
+should be:
+
+1) in the converter you change the ID of the FEI4
+
+2) in the hitmaker, you change the vector of residuals. It contains the
+residuals of the various planes, in z order. Put 3,-3 for mimosas and
+10,-10 for FEI4. Remember to use the new "XXX_pre" gear file after
+having run the hitmaker.
+
+3) in aligngbl change the resolution vector similarly to what done with
+the residuals in hitmaker ("r" is mimosa resolution, rFEI4 the one of
+the FEI4 and dutX and Y of the strip module). For the first tests, I
+would use r=0.005 and rFEI4~0.1 for both directions. Leave planes 0 and
+5 fixed and Fix XRot, YRot and ZShifts for all the planes, at least for
+now. Run first alignGBL usign large cuts (between 0.5 and 1 I would
+say), then check the cut plots, and set stricter cuts based on those
+plots. This should make the trick to have an OKish first alignment step,
+and thus obtain an OK gear.

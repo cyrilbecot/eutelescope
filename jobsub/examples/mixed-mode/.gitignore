@@ -1,4 +1,6 @@
 output_mixed/
 output_standard/
 steering-templates/histoinfo.xml
-
+../gbl_local/output/*
+../gbl_local/stuff/
+../steering-files/
