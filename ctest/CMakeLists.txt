@@ -102,7 +102,7 @@ ENDFUNCTION()
 #  aconite-4chipLocal tests  #
 ##############################
 
-OPTION(TEST_ACONITE4CHIP-LOCAL "Perform aconite-4chipLocal tests?" ON)
+OPTION(TEST_ACONITE4CHIP-LOCAL "Perform aconite-4chipLocal tests?" OFF)
 
 IF(TEST_ACONITE4CHIP-LOCAL)
     FILE(GLOB TEST_LIST_ACONITE RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} aconite-4chipLocal_test/test_*)
