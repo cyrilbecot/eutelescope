@@ -120,6 +120,15 @@ namespace eutelescope {
       std::vector<size_t> _FixedPlanes; //only for internal usage
       std::vector<int> _FixedPlanes_sensorIDs; //this is going to be
 
+	  // Fixed directions for alignMode XYZShiftsXYZRot
+      std::vector<int> _FixedXShift;
+      std::vector<int> _FixedYShift;
+      std::vector<int> _FixedZShift;
+      std::vector<int> _FixedXRot;
+      std::vector<int> _FixedYRot;
+      std::vector<int> _FixedZRot;
+      
+      double _zMid;
       double _eBeam;
 
       double _upTriResCut;
@@ -127,7 +136,9 @@ namespace eutelescope {
       double _upDownTripletMatchCut;
       double _upSlopeCut;
       double _downSlopeCut;
-
+      std::vector<float> _DUTCuts;
+      double _chi2cut;
+      
       double _kappa;
 
       int _maxTrackCandidates;
@@ -140,7 +151,7 @@ namespace eutelescope {
 
       std::vector<int> _FixParameter;
 
-      int _generatePedeSteerfile;
+      int _performAlignment;
       std::string _pedeSteerfileName;
 
       EUTelTripletGBLUtility gblutil;
@@ -153,9 +164,6 @@ namespace eutelescope {
 
       //! counter for printed events (for debugging)
       int _printEventCounter;
-
-      // n Tscope planes
-      size_t _nTelPlanes;
 
       // Excluded planes
       size_t _nExcludePlanes;
@@ -192,9 +200,9 @@ namespace eutelescope {
     // definition of static members mainly used to name histograms
 #if defined(USE_AIDA) || defined(MARLIN_USE_AIDA)
 
-    AIDA::IHistogram1D * nAllHitHistoGBLAlign;
-    AIDA::IHistogram1D * ntriHistGBLAlign;
-    AIDA::IHistogram1D * ndriHistGBLAlign;
+    AIDA::IHistogram1D * nTelHits;
+    AIDA::IHistogram1D * nUpstreamTriplets;
+    AIDA::IHistogram1D * nDownstreamTriplets;
 
     //All Tracks
     AIDA::IHistogram1D * selxHistGBLAlign;
@@ -213,30 +221,6 @@ namespace eutelescope {
     AIDA::IHistogram1D * gblchi2HistGBLAlign;
     AIDA::IHistogram1D * gblprbHistGBLAlign;
 
-    //Bad Tracks
-    AIDA::IHistogram1D * badxHistGBLAlign;
-    AIDA::IHistogram1D * badyHistGBLAlign;
-    AIDA::IHistogram1D * badaxHistGBLAlign;
-    AIDA::IHistogram1D * badayHistGBLAlign;
-    AIDA::IHistogram1D * baddxHistGBLAlign;
-    AIDA::IHistogram1D * baddyHistGBLAlign;
-    AIDA::IHistogram1D * badkxHistGBLAlign;
-    AIDA::IHistogram1D * badkyHistGBLAlign;
-    std::vector<AIDA::IHistogram1D*> baddxSensorHistGBLAlign;
-    std::vector<AIDA::IHistogram1D*> baddySensorHistGBLAlign;
-
-    //Good Tracks
-    AIDA::IHistogram1D * goodxHistGBLAlign;
-    AIDA::IHistogram1D * goodyHistGBLAlign;
-    AIDA::IHistogram1D * goodaxHistGBLAlign;
-    AIDA::IHistogram1D * goodayHistGBLAlign;
-    AIDA::IHistogram1D * gooddxHistGBLAlign;
-    AIDA::IHistogram1D * gooddyHistGBLAlign;
-    AIDA::IHistogram1D * goodkxHistGBLAlign;
-    AIDA::IHistogram1D * goodkyHistGBLAlign;
-    std::vector<AIDA::IHistogram1D*> gooddxSensorHistGBLAlign;
-    std::vector<AIDA::IHistogram1D*> gooddySensorHistGBLAlign;
-
     std::vector<AIDA::IHistogram1D*> gblAxHist;
     std::vector<AIDA::IHistogram1D*> gblAyHist;
 
@@ -252,7 +236,7 @@ namespace eutelescope {
     std::vector<AIDA::IHistogram1D*> gblKinkXHist;
     std::vector<AIDA::IHistogram1D*> gblKinkYHist;
 
-    AIDA::IHistogram1D * nmHistGBLAlign;
+    AIDA::IHistogram1D * ntracksperevent;
 #endif
 
 
