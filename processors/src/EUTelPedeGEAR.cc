@@ -58,7 +58,7 @@ EUTelPedeGEAR::EUTelPedeGEAR() : Processor("EUTelPedeGEAR") {
       "Number of alignment constants used. Available mode are: "
       "\n\t\tXYShiftsRotZ - shifts in the X and Y directions and a rotation around the Z axis,"
       "\n\t\tXYShifts - only shifts in the X and Y directions"
-      "\n\t\tXYShiftsAllRot - shifts in the X,Y and Z directions and rotations around all three axis",
+      "\n\t\tXYZShiftsRotXYZ - all shifts and rotations allowed",
       _alignModeString, std::string("XYShiftsRotZ"));
 
   registerOptionalParameter("PedeSteerfileName",
@@ -70,13 +70,9 @@ EUTelPedeGEAR::EUTelPedeGEAR() : Processor("EUTelPedeGEAR") {
                             "(this is not default!) to overwrite old GEAR file",
                             _GEARFileSuffix, std::string("_aligned"));
 
-  registerOptionalParameter("OffsetScaleFactor",
-                            "Offset scale factor.",
-                            _offsetScaleFactor, 1000);
-
   registerOptionalParameter("RotateOffsetVec",
                             "Apply the obtained rotation to the preexisting offset vector or not..",
-                            _rotateOldOffsetVec, false);
+                            _rotateOldOffsetVec, false); //I don't understand what this is
 
 
 }
@@ -99,6 +95,8 @@ void EUTelPedeGEAR::init() {
   } else if( _alignModeString.compare("XYShifts") == 0 ) {
 	_alignMode = Utility::alignMode::XYShifts;
   } else if( _alignModeString.compare("XYShiftsAllRot") == 0 ) {
+	_alignMode = Utility::alignMode::XYShiftsAllRot;
+  } else if( _alignModeString.compare("XYZShiftsRotXYZ") == 0 ) {
 	_alignMode = Utility::alignMode::XYShiftsAllRot;
   } else {
 	streamlog_out(ERROR) << "The chosen AlignMode: '" << _alignModeString << "' is invalid. Please correct your steering template and retry!" << std::endl;
@@ -125,7 +123,7 @@ void EUTelPedeGEAR::init() {
   // the user is giving sensor ids for the planes to be excluded. this
   // sensor ids have to be converted to a local index according to the
   // planes positions along the z axis.
-  for (size_t i = 0; i < _FixedPlanes_sensorIDs.size(); i++) {
+  for (size_t i = 0; i < _FixedPlanes_sensorIDs.size(); i++) { //what is this doing? probably fixed planes not needed here
     std::map<double, int>::iterator iter = sensorIDMap.begin();
     int counter = 0;
     while (iter != sensorIDMap.end()) {
@@ -163,7 +161,7 @@ void EUTelPedeGEAR::init() {
       }
     }
     if (!excluded)
-      _orderedSensorID_wo_excluded.push_back(iter->second);
+      _orderedSensorID_wo_excluded.push_back(iter->second); //I think this is not necessary anymore
     _orderedSensorID.push_back(iter->second);
 
     ++iter;
@@ -337,7 +335,6 @@ void EUTelPedeGEAR::end() {
       std::getline(millepede, line);
 
       int counter = 0;
-      int sensorID = _orderedSensorID.at(counter);
 
       while (!millepede.eof()) {
         bool goodLine = true;
@@ -348,19 +345,20 @@ void EUTelPedeGEAR::end() {
         } else {
           numpars = 6;
         }
-
+        
+        int sensorID = 0; // should be done better
         double xOff = 0;
         double yOff = 0;
         double zOff = 0;
-        /*	double xOffErr = 0;
-                double yOffErr = 0;
-                double zOffErr = 0;  */
+        double xOffErr = 0;
+        double yOffErr = 0;
+        double zOffErr = 0; 
         double alpha = 0;
         double beta = 0;
         double gamma = 0;
-        /*	double alphaErr = 0;
-                double betaErr = 0;
-                double gammaErr = 0; */
+        double alphaErr = 0;
+        double betaErr = 0;
+        double gammaErr = 0;
 
         for (unsigned int iParam = 0; iParam < numpars; ++iParam) {
           std::getline(millepede, line);
@@ -386,62 +384,59 @@ void EUTelPedeGEAR::end() {
             goodLine = false;
           }
 
-          // Remove comments to read in uncertainty
-          //	bool isFixed = (tokens.size() == 3);
-
           if (_alignMode != Utility::alignMode::XYShiftsAllRot) {
             if (iParam == 0) {
-              xOff = tokens[1] / _offsetScaleFactor;
-              //			if(!isFixed) xOffErr	=
-              //tokens[4]/1000.;
+			  sensorID = (tokens[0] - 1) / 10; // should be done better
+              xOff = tokens[1];
+              if(tokens[2] == 0) xOffErr = tokens[4];
             }
             if (iParam == 1) {
-              yOff = tokens[1] / _offsetScaleFactor;
-              //			if(!isFixed) yOffErr	=
-              //tokens[4]/1000.;
+              yOff = tokens[1];
+              if(tokens[2] == 0) yOffErr = tokens[4];
             }
             if (iParam == 2) {
               gamma = -tokens[1];
-              //			if(!isFixed) gammaErr	= tokens[4];
+              if(tokens[2] == 0) gammaErr = tokens[4];
             }
           } else {
             if (iParam == 0) {
-              xOff = tokens[1] / _offsetScaleFactor;
-              //			if(!isFixed) xOffErr	=
-              //tokens[4]/1000.;
+			  sensorID = (tokens[0] - 1) / 10; // should be done better
+              xOff = tokens[1];
+              if(tokens[2] == 0) xOffErr = tokens[4];
             }
             if (iParam == 1) {
-              yOff = tokens[1] / _offsetScaleFactor;
-              //			if(!isFixed) yOffErr	=
-              //tokens[4]/1000.;
+              yOff = tokens[1];
+              if(tokens[2] == 0) yOffErr = tokens[4];
             }
             if (iParam == 2) {
-              zOff = tokens[1] / _offsetScaleFactor;
-              //			if(!isFixed) zOffErr	=
-              //tokens[4]/1000.;
+              zOff = tokens[1];
+              if(tokens[2] == 0) zOffErr = tokens[4];
             }
             if (iParam == 3) {
               alpha = -tokens[1];
-              //			if(!isFixed) alphaErr	= tokens[4];
+              if(tokens[2] == 0) alphaErr = tokens[4];
             }
             if (iParam == 4) {
               beta = -tokens[1];
-              //			if(!isFixed) betaErr	= tokens[4];
+              if(tokens[2] == 0) betaErr = tokens[4];
             }
             if (iParam == 5) {
               gamma = -tokens[1];
-              //			if(!isFixed) gammaErr	= tokens[4];
+              if(tokens[2] == 0) gammaErr = tokens[4];
             }
           }
         }
 
         // right place to add the constant to the collection
+        // Errors added to the output. Format should be improved, though
         if (goodLine) {
-          sensorID = _orderedSensorID.at(counter);
-          std::cout << "Alignment on sensor " << sensorID
-                    << " determined to be: xOff: " << xOff << ", yOff: " << yOff
-                    << ", zOff: " << zOff << ", alpha: " << alpha
-                    << ", beta: " << beta << ", gamma: " << gamma << std::endl;
+          std::cout << "Alignment on sensor " << sensorID << " determined to be: " << std::endl
+                    << "xOff: " << xOff << " +- " << xOffErr << std::endl
+                    << "yOff: " << yOff << " +- " << yOffErr << std::endl
+                    << "zOff: " << zOff << " +- " << zOffErr << std::endl
+                    << "alpha: " << alpha << "+- " << alphaErr << std::endl
+                    << "beta: " << beta << " +- " << betaErr << std::endl
+                    << "gamma: " << gamma  << " +- " << gammaErr << std::endl;
 
           // The old rotation matrix is well defined by GEAR file
           Eigen::Matrix3d rotOld = geo::gGeometry().rotationMatrixFromAngles(sensorID);
@@ -467,6 +462,7 @@ void EUTelPedeGEAR::end() {
               geo::gGeometry().getPlaneYPosition(sensorID),
               geo::gGeometry().getPlaneZPosition(sensorID);
 		
+		// Edo: is this useful somehow or just a residual of old alignment collection?
 		if(_rotateOldOffsetVec) {
 			oldOffset = rotAlign*oldOffset;          
 		}

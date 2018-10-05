@@ -1,3 +1,6 @@
+geometry_test_evtid/
+geometry_test_trigid/
+output/
 output_mixed/
 output_standard/
 steering-templates/histoinfo.xml
